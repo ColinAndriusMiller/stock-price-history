@@ -8,43 +8,45 @@ import java.util.Map;
 import java.util.HashMap;
 import java.io.File;
 import java.io.FileWriter;
-
+/**
+ * Retrieve historical stock prices
+ */
 public class StockPriceHistory
 {
 
     private final String TICKER = "GOOG";
     private Interval DAILY = Interval.DAILY;
-
+    
     /**
      * Retrieve the stock price data
      */
     public void run() {
         try {
-            Stock stock = YahooFinance.get(TICKER, true);
+            
             Calendar from = Calendar.getInstance();
             Calendar to = Calendar.getInstance();
-            System.out.println(stock);
             from.add(Calendar.YEAR, -1);
-
+ 
             Stock google2 = YahooFinance.get("GOOG");
-            List<HistoricalQuote> googleHistQuotes = google2.getHistory(to, Interval.DAILY);
-            Map<String, String> datas = new HashMap<String, String>();
-
-            for (int i = 0; i < googleHistQuotes.size(); i++) {
+            List<HistoricalQuote> googleHistQuotes = google2.getHistory(from, to, Interval.DAILY);
+            Map<String,String> datas = new HashMap<String,String>();
+            
+            for (int i=0;i < googleHistQuotes.size();i++) {
                 String date = googleHistQuotes.get(i).toString();
                 date = date.substring(5, 15);
                 String price = googleHistQuotes.get(i).toString();
-                price = price.split("[\\(\\)]")[i];
-
-                System.out.println (date + "," + price);
+                price = price.split("[\\(\\)]")[1];
+                
+                System.out.println(date + ", "+  price);
             }
-            System.out.println(datas);
 
+            System.out.println(datas);
+            
         } catch (Exception e) {
             System.out.println("Error in stock call");    
         }
     }
-
+    
     /**
      * Format a Calendar object to YYYY-MM-DD format
      */
@@ -54,11 +56,11 @@ public class StockPriceHistory
         int day = date.get(Calendar.DATE);
         String monthStr = (month < 10) ? "0"+month : month+"";
         String dayStr = (day < 10) ? "0"+day : day+"";
-
+        
         String dateStr = year+"-"+monthStr+"-"+dayStr;
         return dateStr;
     }
-
+    
     /**
      * Main method to run the program
      */
@@ -67,4 +69,3 @@ public class StockPriceHistory
         sph.run();
     }
 }
-
